@@ -9,8 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer,Long> {
-
-    Optional<Object> findById(Product productId);
-
-    Customer findByEmail(String email);
 }

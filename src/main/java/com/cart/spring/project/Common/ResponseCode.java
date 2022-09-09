@@ -1,16 +1,16 @@
 package com.cart.spring.project.Common;
 
 public enum ResponseCode {
-    SUCCESS("00"),
-    FAILED("01");
+    SUCCESS(00),
+    FAILED(01);
 
-    ResponseCode(String code) {
+    ResponseCode(Integer code) {
         this.code = code;
     }
 
-    private String code;
+    private Integer code;
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 }

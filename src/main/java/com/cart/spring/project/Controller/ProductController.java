@@ -9,6 +9,7 @@ import com.cart.spring.project.Service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -29,6 +30,16 @@ public class ProductController {
             }
         } catch (Exception e){
             return new BaseResponse<>(CommonCode.NOT_FOUND,CommonMessage.ERROR);
+        }
+    }
+
+    @GetMapping
+    public BaseResponse<Product> getAllProducts(){
+        try{
+           List<Product> productList =  productService.getAllProducts();
+            return new BaseResponse(CommonCode.SUCCESS,CommonMessage.FOUND,productList);
+        } catch (Exception e){
+            return new BaseResponse<>(CommonCode.BAD_REQUEST,CommonMessage.NOT_FOUND);
         }
     }
 

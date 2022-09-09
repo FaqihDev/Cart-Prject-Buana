@@ -17,10 +17,6 @@ import java.util.Date;
 @Table(name = "product")
 public class Product extends ModelBase{
 
-    @JoinColumn(name = "cart_id")
-    @ManyToOne
-    private Cart cart;
-
     @Column(name="product_name",nullable = false)
     private String name;
 
@@ -42,5 +38,6 @@ public class Product extends ModelBase{
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "product_exp_date")
     private Date expDate;
+
 
 }

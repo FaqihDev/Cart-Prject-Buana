@@ -7,10 +7,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class DataNotFoundException extends RuntimeException{
 
-    private String responseCode;
+    private Integer responseCode;
     private String responseMessage;
 
-    public DataNotFoundException(String responseCode) {
+    public DataNotFoundException(Integer responseCode) {
         this.responseCode = responseCode;
     }
 }

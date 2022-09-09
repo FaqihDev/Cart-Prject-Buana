@@ -32,7 +32,6 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CustomerRepository customerRepository;
 
-
     @Autowired
     private CartRepository cartRepository;
 
@@ -43,38 +42,36 @@ public class CartServiceImpl implements CartService {
     public ResponseEntity<?> addProductToCart(CartRequest cartRequest) {
 
         //Cari produk dan user berdasarkan id
-        Product product = productRepository.findById(cartRequest.getProductId()).orElseThrow(()->
-                new DataNotFoundException(ResponseCode.FAILED.getCode()));
+        Cart cart = new Cart();
 
-        Customer customer = customerRepository.findById(cartRequest.getCustomerId()).orElseThrow(()->
-                new DataNotFoundException(ResponseCode.FAILED.getCode()));
+        Customer customer = customerRepository.findById(cartRequest.getCustomerId()).orElse(null);
+        cart.setCustomerId(customer);
 
-        if (product.getQuantity() < 1){
-            throw new OutOfStockException(ResponseCode.FAILED.getCode());
-        }
+        Product product = productRepository.findById(cartRequest.getProductId()).orElse(null);
+        cart.setProductId(product);
 
         //Buat objek cart dan masukan set customer dan product kedalam cart
-        Cart cart = new Cart();
-        cart.setProductId(product);
-        cart.setCustomerId(customer);
         cart.setCreatedBy("USER");
         Date today = Date.from(Instant.now());
         cart.setCreatedDate(today);
         cart.setAmount(product.getPrice());
         cart.setTotalPrice(cartRequest.getQuantity() * product.getPrice());
+        Long quantity = product.getQuantity() - cartRequest.getQuantity();
+        product.setQuantity(quantity);
         cart.setIsCancel(0);
 
-         cartRepository.save(cart);
-         return ResponseEntity.ok().body(new BaseResponse<>(ResponseCode.SUCCESS.getCode(),"Add to chart success",null));
+        if (product.getQuantity() < 1){
+            throw new OutOfStockException(ResponseCode.FAILED.getCode());
+        }
+        cartRepository.save(cart);
+        return ResponseEntity.ok().body(new BaseResponse(ResponseCode.SUCCESS.getCode(), "Success to add product to cart"));
 
     }
 
     @Override
     public List<Cart> getAllProductInCart(Long userId) {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new DataNotFoundException(ResponseCode.FAILED.getCode()));
-//        List<Cart> allByCustomerId = cartRepository.findAllByCustomerId(customer);
-        List<Cart> allProductByCustomer = cartRepository.findAllProductByCustomerId(customer);
-
+        List<Cart> allProductByCustomer = cartRepository.findAllCartByCustomerId(customer);
         return allProductByCustomer;
     }
 
@@ -94,8 +91,8 @@ public class CartServiceImpl implements CartService {
         c.setCustomerName(name);
         c.setTotalPriceInCart(Total);
 
-
         Checkout checkout = new Checkout();
+
         checkout.setCustomerId(customer);
         checkout.setTotalPrice(Total);
         Date now = Date.from(Instant.now());
@@ -111,11 +108,5 @@ public class CartServiceImpl implements CartService {
     public void removeCart(Long id) {
         cartRepository.deleteById(id);
     }
-
-    @Override
-    public Optional<List<Cart>> addMoreItemsToCart(CartRequest cartRequest) {
-        return Optional.empty();
-    }
-
 
 }

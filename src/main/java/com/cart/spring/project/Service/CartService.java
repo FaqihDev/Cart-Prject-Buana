@@ -3,7 +3,6 @@ package com.cart.spring.project.Service;
 import com.cart.spring.project.Dto.Response.CartResponseTotalFinalizeDto;
 import com.cart.spring.project.Entity.Cart;
 import com.cart.spring.project.Dto.Request.CartRequest;
-import com.cart.spring.project.Entity.Product;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -19,6 +18,5 @@ public interface CartService {
 
     public void removeCart(Long userId);
 
-    public Optional<List<Cart>> addMoreItemsToCart(CartRequest cartRequest);
 
 }
